@@ -13,4 +13,6 @@ Get latest cassandra from this [link](http://cassandra.apache.org/download/)
 
 It requires you to have JDK 8 and 3.11.2 don't support JDK 9 , 10 yet.
 
+Then learn about the basic CQL commands like create, alter, insert, update by following CQL Examples in this [link](http://tech.joshegan.com/posts/yr2016/cassandra-cheatsheet)
+
 Then get familiarize with the [Datastax Java Driver](https://docs.datastax.com/en/developer/java-driver/3.1/) for cassandra
