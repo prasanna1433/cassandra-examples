@@ -2,6 +2,8 @@
 
 Apache Cassandra is a popular NoSQL data store that is used widely in the industry.
 
+[Cassandra Basic](CASSBASICS.md)
+
 This repository holds examples of clients that can connect to Cassandra and perform various operation in the cluster.
 
 Please familiarize yourself about cassandra by taking the following courses:
