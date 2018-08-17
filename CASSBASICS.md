@@ -27,45 +27,41 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 * CREATE KEYSPACE killrvideos  WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':'1'};
 * CREATE TABLE users ( state text, city text, name text, id int, PRIMARY KEY((state),city,name,id)) WITH CLUSTERING ORDER BY(city DESC, name ASC);
 * INSERT INTO table_name VALUES (columns) = This statement is used to insert the data into the tables.
-* SELECT */columns FROM tables_name WHERE primary key  = This statement is used to retreive the data from the table.
+* SELECT columns FROM tables_name WHERE primary key  = This statement is used to retrieve the data from the table.
 * COPY table_name (columns) FROM 'table_data.csv' WITH HEADER=true = This statement is used to import/export CSV
-
-Data Types:
--> int
--> text
+* Cassandra has lot of [data types](https://docs.datastax.com/en/cql/3.3/cql/cql_reference/cql_data_types_c.html)
 
 # Partitions:
 
-* Partition Key: It is the grouping of data based in some value. It can be though of as a ordering scheme in the disk. A partitioner is the one that creates a token for a partition.
-* Clustering Key: It makes the partition key unique by adding this key in.
-* Primary Key = Partition Key + Clustering
+* *Partition Key:* It is the grouping of data based in some value which can be though of as a ordering scheme in the disk. A partitioner is the one that creates a token for a partition.
+* *Clustering Key:* We make the partition key unique by adding few more value to the grouping of data and this also helps in ordering of data in the disk.
+* *Primary Key* It is the combination of Partition Key + Clustering Key
 
 
 # Driver:
 
-* Driver is used for connecting to the Cassandra and talking to it. Datastax has open sourced the drivers available in variour languages
+* [Driver](https://docs.datastax.com/en/developer/java-driver/3.1/) is used for connecting to the Cassandra and talking to it. Datastax has open sourced the drivers available in various languages.
 
 
 # Node:
 
-* This is where the data is stored and we need to connect the node to store the data in a disk and it can be a SSD/rotational disk
+* This is where the data is stored and we need to connect a node to store/retreive the data from/to the disk and the disk can be a SSD/rotational disk
 * Node play a vital part in running the cassandra cluster and can take in 3000 - 5000 transaction/second/core
 * Data is stored in a node and each node will be talking to other nodes all the time.
 
 
-
 # Ring:
 
-* This is how Cassandra like to work and is able to scale.
+* Cassandra like to have more that one node as a part of ring and this allows it to scale.
 * Each of the node will take a token range and it is from -2 power 63 to + 2 power 63 - 1.
-* All the nodes acts as coordinator to write and read the data from the cluster.
-* A node in a ring can in any of this four states Up/Down/Joining/Leaving
+* All the nodes acts as coordinator to write and read the data to and from the cluster.
+* A node in a ring can in any of this four states *Up/Down/Joining/Leaving*
 * We can scale the cluster vertically / horizontally.
-* Partitioner will determine were to distribute the data and it should be proper so that distribution os data is even.
-* Cassandra Driver has the important role to chose the node to talk to and token ranges spread across the ring.
-	* TokenAwarePolicy - driver know the node to send  and read the data from
-	* RoundRobinPolicy - driver uses round robins to route the request for data and write the data in the ring
-	* DCAwareRoundRobinPolicy - driver will round robin to route the request for data and write the data in the local datacenter
+* Partitioner will determine were to distribute the data and it should be proper so that distribution of data is even in the cluster.
+* Cassandra Driver has the important role on choosing the node to talk to and token ranges spread across the ring. Following are few of the policies available to talk to the cluster
+	* *TokenAwarePolicy* - driver know the node to send  and read the data from
+	* *RoundRobinPolicy* - driver uses round robins to route the request for data and write the data in the ring
+	* *DCAwareRoundRobinPolicy* - driver will round robin to route the request for data and write the data in the local datacenter
 
 # Peer to Peer:
 
@@ -83,11 +79,11 @@ Data Types:
 
 # Gossip:
 
-* Share the information among the nodes in the Cassandra cluster.
+* Sharing of information about other nodes as a node sees it among the nodes in the Cassandra cluster.
 * A node picks one other random node to gossip every specified time.
-* Cluster Metadata (Endpoint State, Heartbeat State, Application State) is the information that is being shared amoung the nodes.
+* Cluster Metadata (Endpoint State, Heartbeat State, Application State) is the information that is being shared among the nodes.
 * When the metadata is arrives in the other node it looks at its information and sends what information it sees to the node that initiated gossip.
-* Initial node then compares this data with it own and send an acknowledgement to the previous one.
+* Initial node then compares this data with it own and send an acknowledgement to the other one.
 * Sync is sent and then first and the second node share the ACKS to get the final updated data.
 
 
@@ -96,18 +92,18 @@ Data Types:
 * Snitch is used to inform where each node is located resides in the cloud.
 * Regular and Cloud Based are the two main types of the snitch.
 * Types of Snitch:
-   * SimpleSnitch: Local system adn is not recommended in production environment
-   * Property file Snitch: We need to have to store the information about the whole cluster ip:dc:rack in a cassandra-topology.properties file
-   * Gossip File snitch: you store the dc:rack information of each node in cassandra-rackdc.properties
-   * Rack Inferring Snitch: used the ip to determine the dc:rack:node information.
-* Dynamic Snitch: This is used under teh cover for all the snitchs and will determine the load that the cluster is on so that it can redirect the traffic to various nodes.
+   * *SimpleSnitch:* Local system adn is not recommended in production environment
+   * *Property file Snitch:* We need to have to store the information about the whole cluster ip:dc:rack in a cassandra-topology.properties file
+   * *Gossip File snitch:* you store the dc:rack information of each node in cassandra-rackdc.properties
+   * *Rack Inferring Snitch:* used the ip to determine the dc:rack:node information.
+* Dynamic Snitch: This is used under the cover by all the snitch's and will determine the load that the cluster is on so that it can redirect the traffic to various nodes.
 
 
 
 # Replication:
 
-* Simple Strategy: This is the configuration that works if you are in single data center
-* Network Topology Strategy: This is the configuration that works we have multiple data centers
+* *Simple Strategy:* This is the configuration that works if you are in single data center
+* *Network Topology Strategy:* This is the configuration that works we have multiple data centers
 
 * RF 1 Each node has different sets of data
 * RF 2 Each node has its own and other
@@ -119,31 +115,35 @@ Data Types:
 
 * This controls how we read and write the data into cassandra.
 * Each read / write needs acknowledgement from the replicas of the data and we can chose how long to wait before moving on to the next read/write
-* QUORUM is 51% should respond to teh read/write request
-* EACH_QUORUM is that we need to wait for 51% across all the datacenter
-* LOCAL_QUORUM is the we need to wait for 51% in the nearest datacenter
+* *QUORUM* is 51% should respond to teh read/write request
+* *EACH_QUORUM* is that we need to wait for 51% across all the datacenter
+* *LOCAL_QUORUM* is the we need to wait for 51% in the nearest datacenter
+* Elaborate list of consistencies available are found [here](https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html)
 
 
 # Hinted Handoff:
 
 * When a node is down then the coordinator will hold on to the data for it and once it is back up that data is sent it as a hint
-* ANY is bad means that hits is enough and ONE is at least of the replicas need to have the data and data will be consistent because one node should acknowledge that write
-* We can control the hinted handoff feature by setting the appropriate parameters in cassandra.yml file
+* *ANY* is bad  and it means that hints are enough for teh write request to be acknowledged and
+* *ONE* is at least ok because on of the replicas need to have the data and it will be eventually consistent because one node should acknowledge that write
+* We can control the hinted hand off feature by setting the appropriate parameters in cassandra.yml file
 
 
 # Read - Repair:
 
-* Keep data in sync to for the cluster by doing a check with the other replicas when a read is initiated
-* Coordinator node will do that comparision of data and make the data consistent by sending the latest data to other replicas if the timestamps are different
-* nodetool repair will make all the data consistent and we need to run it atleast once every grace period
+* Keep data in sync among the nodes in the cluster and it is done by doing a check with the other replicas whenever a read is initiated in case of QUORUM
+* Coordinator node will do that comparision of data and make the data consistent by sending the latest copy of data to other replicas if the timestamps are different
+* nodetool repair will make all the data consistent and we need to run it at least once every grace period
 
 
 # Read Path:
 
-* Memtable is in memory and holds the data for hash of the primary key and can read the data directly.
-* SSTable is in disk in the range of the partition key and in order to simplify the read there is a table structure called a partition index which is also located in the disk
-* as the data is expected to grow really fast in teh cassandra cluster there is another data structure called summary index/partition summary in RAM where we can find the offset approximate for the partition index
-* key cache will hold the partition number of the data that is accessed frequently
-* bloom filter is the first data structure that you will read and it will give you no when the data is absolutely not present in the SSTable and may be when there is a possibility when the data exists
+* *Memtable* is in memory and holds the data for hash of the partition key and we can read the data directly in memory.
+* *SSTable* is in disk and contains range of the partition key and
+* *partition index* is the way to simplify the read od data from SSTable and it is also located in the disk
+* *Summary index* as the data is expected to grow really fast in teh cassandra cluster there is another data structure called summary index/partition summary in RAM where we can find the offset approximation for the partition index
+* *Key cache* will hold the location to partition of the data that is accessed frequently
+* *bloom filter* is the first data structure that you will read and it will give you no when the data is absolutely not present in the SSTable and may be when there is a possibility when the data exists
 * If the bloom filter give a may be then we need to go to the key cache, summary index and partition index for fetching the data
+* Path to the data on read -> ** Memtable - Bloom Filter - Key Cache - Summary Index - Partition Index - SSTable **
 
