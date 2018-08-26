@@ -2,8 +2,11 @@
 
 Apache Cassandra is a popular NoSQL data store that is used widely in the industry.
 
-[Cassandra Basic](CASSBASICS.md)
-[Data Modeling] (DATAMODEL.md)
+Following are introduction into cassandra basics and data modeling:
+
+* [Cassandra Basic](CASSBASICS.md)
+* [Data Modeling](DATAMODEL.md)
+
 This repository holds examples of clients that can connect to Cassandra and perform various operation in the cluster.
 
 Please familiarize yourself about cassandra by taking the following courses:

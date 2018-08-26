@@ -145,5 +145,5 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 * **Key cache** will hold the location to partition of the data that is accessed frequently
 * **bloom filter** is the first data structure that you will read and it will give you no when the data is absolutely not present in the SSTable and may be when there is a possibility when the data exists
 * If the bloom filter give a may be then we need to go to the key cache, summary index and partition index for fetching the data
-* Path to the data on read -> **Memtable - Bloom Filter - Key Cache - Summary Index - Partition Index - SSTable**
+* Path to the data on read -> **Memtable - Row Cache(if enabled) - Bloom Filter - Key Cache - Summary Index - Partition Index - SSTable**
 
