@@ -11,7 +11,7 @@ Reasons to use Apache Cassandra:
 
 Seems to be similar to SQL but not really we cannot do joins, group by and aggregates.
 
-*Keyspaces* - Top level container similar to database schema and this is where we store the replication factor.
+**Keyspaces** - Top level container similar to database schema and this is where we store the replication factor.
 
 To start cassandra in you local machine navigate to the cassandra folder and type bin/cassandra
 
@@ -142,7 +142,7 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 * **SSTable** is in disk and contains range of the partition key and
 * **Partition index** is the way to simplify the read od data from SSTable and it is also located in the disk
 * **Summary index** as the data is expected to grow really fast in teh cassandra cluster there is another data structure called summary index/partition summary in RAM where we can find the offset approximation for the partition index
-* **Key cache* *will hold the location to partition of the data that is accessed frequently
+* **Key cache** will hold the location to partition of the data that is accessed frequently
 * **bloom filter** is the first data structure that you will read and it will give you no when the data is absolutely not present in the SSTable and may be when there is a possibility when the data exists
 * If the bloom filter give a may be then we need to go to the key cache, summary index and partition index for fetching the data
 * Path to the data on read -> **Memtable - Bloom Filter - Key Cache - Summary Index - Partition Index - SSTable**
