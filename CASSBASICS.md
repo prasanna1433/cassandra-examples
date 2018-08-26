@@ -19,7 +19,7 @@ To start cassandra in you local machine navigate to the cassandra folder and typ
 INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/127.0.0.1 state jump to NORMAL
 ```
 
-*Tables* - It is the place were data is stored in Cassandra and we spend most of the time at
+**Tables** - It is the place were data is stored in Cassandra and we spend most of the time at
 
 ##  Basic CQL Commands:
 
@@ -92,11 +92,11 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 * Snitch is used to inform where each node is located resides in the cloud.
 * Regular and Cloud Based are the two main types of the snitch.
 * Types of Snitch:
-   * **SimpleSnitch:** Local system adn is not recommended in production environment
-   * **Property file Snitch:** We need to have to store the information about the whole cluster ip:dc:rack in a cassandra-topology.properties file
-   * **Gossip File snitch:* *you store the dc:rack information of each node in cassandra-rackdc.properties
+   * **SimpleSnitch:** Local system and is not recommended in production environment
+   * **Property file Snitch:** We need to store the information about the whole cluster ip:dc:rack in a cassandra-topology.properties file
+   * **Gossip File snitch:** it enough if you store the dc:rack information of each node in cassandra-rackdc.properties and is the recommended one in production
    * **Rack Inferring Snitch:** used the ip to determine the dc:rack:node information.
-* Dynamic Snitch: This is used under the cover by all the snitch's and will determine the load that the cluster is on so that it can redirect the traffic to various nodes.
+* **Dynamic Snitch:** This is used under the cover by all the snitch's and will determine the load that the cluster is on so that it can redirect the traffic to various nodes.
 
 
 
@@ -125,7 +125,7 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 
 * When a node is down then the coordinator will hold on to the data for it and once it is back up that data is sent it as a hint
 * **ANY** is bad  and it means that hints are enough for teh write request to be acknowledged and
-* **ONE** is at least ok because on of the replicas need to have the data and it will be eventually consistent because one node should acknowledge that write
+* **ONE** is at least ok because one of the replicas need to have the data and should acknowledge the write, it will be eventually consistent because one node acknowledged that write
 * We can control the hinted hand off feature by setting the appropriate parameters in cassandra.yml file
 
 
@@ -139,11 +139,22 @@ INFO  [main] 2018-08-07 21:42:19,865 StorageService.java:2292 - Node localhost/1
 # Read Path:
 
 * **Memtable** is in memory and holds the data for hash of the partition key and we can read the data directly in memory.
-* **SSTable** is in disk and contains range of the partition key and
+* **SSTable** is in disk and contains range of the partition key and the data itself
 * **Partition index** is the way to simplify the read od data from SSTable and it is also located in the disk
 * **Summary index** as the data is expected to grow really fast in teh cassandra cluster there is another data structure called summary index/partition summary in RAM where we can find the offset approximation for the partition index
 * **Key cache** will hold the location to partition of the data that is accessed frequently
 * **bloom filter** is the first data structure that you will read and it will give you no when the data is absolutely not present in the SSTable and may be when there is a possibility when the data exists
 * If the bloom filter give a may be then we need to go to the key cache, summary index and partition index for fetching the data
 * Path to the data on read -> **Memtable - Row Cache(if enabled) - Bloom Filter - Key Cache - Summary Index - Partition Index - SSTable**
+
+Read more about Read Path [here](https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlAboutReads.html)
+
+# Write Path:
+
+* Data written to cassandra goes to the coordinator and will be routed to the appropriate partition
+* In the appropriate node it is written to commit logs and memtable first
+* When the memtable is full then data is flushed into the disk to SSTable
+* Path to write data -> **commit log, memtable -> SSTable**
+
+Read more about the Write Path [here](https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html)
 
